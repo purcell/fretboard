@@ -2,11 +2,11 @@ module Main exposing (main)
 
 import Browser
 import Fretboard exposing (Fretboard)
-import Html exposing (Html, button, div, text)
+import Html exposing (Html, div)
 
 
-type Msg
-    = NoOp
+type alias Msg =
+    ()
 
 
 type alias Model =
