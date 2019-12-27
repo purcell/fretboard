@@ -40,7 +40,4 @@ update _ model =
 
 view : Model -> Html Msg
 view model =
-    Html.div []
-        [ Html.text "Hello!"
-        , Fretboard.view model.fretboard
-        ]
+    Html.div [] [ Fretboard.view model.fretboard ]
