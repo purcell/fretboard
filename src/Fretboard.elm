@@ -9,16 +9,16 @@ import TypedSvg.Types exposing (Fill(..), Length(..), px)
 
 
 type alias Fretboard =
-    {}
+    { numStrings : Int, numFrets : Int }
 
 
 default : Fretboard
 default =
-    {}
+    { numStrings = 6, numFrets = 15 }
 
 
 view : Fretboard -> Html msg
-view board =
+view model =
     let
         fingerboard =
             rect
@@ -41,13 +41,13 @@ view board =
                 []
 
         strings =
-            List.map string (List.range 1 numStrings)
+            List.map string (List.range 1 model.numStrings)
 
         string : Int -> Svg msg
         string i =
             let
                 slicePct =
-                    100 / numStrings
+                    100 / toFloat model.numStrings
 
                 stringY =
                     100 + (slicePct * (0.5 - toFloat i))
@@ -58,22 +58,32 @@ view board =
                 , y2 (Percent stringY)
                 , x2 (Percent 100)
                 , stroke (Color.rgb255 140 140 140)
-                , strokeWidth (px (1 + logBase 10 (toFloat (1 + numStrings - i))))
+                , strokeWidth (px (1 + logBase 10 (toFloat (1 + model.numStrings - i))))
                 ]
                 []
 
-        numStrings =
-            6
-
-        frets : List (Svg msg)
         frets =
-            []
+            List.map fret (List.range 1 model.numFrets)
+
+        fretOffsetPct i =
+            (12 / toFloat model.numFrets) * 200 * (1 - (1 / (2 ^ (toFloat i / 12))))
+
+        fret i =
+            rect
+                [ x (Percent (fretOffsetPct i))
+                , height (Percent 100)
+                , width (px 3)
+                , fill (Fill (Color.rgb255 240 240 240))
+                , stroke (Color.rgb255 180 180 180)
+                , strokeWidth (px 1)
+                ]
+                []
     in
     svg [ viewBox 0 0 600 200 ]
         [ svg [ x (px 50), y (px 50), width (px 500), height (px 100) ]
             [ fingerboard
             , nut
             , svg [ x (px 10) ]
-                strings
+                (frets ++ strings)
             ]
         ]
