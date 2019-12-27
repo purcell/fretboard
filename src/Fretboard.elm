@@ -2,8 +2,8 @@ module Fretboard exposing (..)
 
 import Color
 import Html exposing (Html)
-import TypedSvg exposing (line, rect, svg)
-import TypedSvg.Attributes exposing (fill, height, stroke, strokeWidth, viewBox, width, x, x1, x2, y, y1, y2)
+import TypedSvg exposing (circle, line, rect, svg)
+import TypedSvg.Attributes exposing (cx, cy, fill, height, r, stroke, strokeWidth, viewBox, width, x, x1, x2, y, y1, y2)
 import TypedSvg.Core exposing (Svg)
 import TypedSvg.Types exposing (Fill(..), Length(..), px)
 
@@ -78,12 +78,42 @@ view model =
                 , strokeWidth (px 1)
                 ]
                 []
+
+        inlays =
+            List.concatMap inlay (List.range 1 model.numFrets)
+
+        inlay i =
+            let
+                ni =
+                    modBy 12 i
+
+                dotCx =
+                    0.3 + fretOffsetPct (i - 1) + 0.5 * (fretOffsetPct i - fretOffsetPct (i - 1))
+
+                dotAtY y =
+                    circle
+                        [ cy (Percent y)
+                        , cx (Percent dotCx)
+                        , r (Percent 1)
+                        , fill (Fill Color.black)
+                        ]
+                        []
+            in
+            if ni == 0 then
+                [ dotAtY 17, dotAtY 83 ]
+
+            else if ni == 3 || ni == 5 || ni == 7 || ni == 9 then
+                [ dotAtY 50
+                ]
+
+            else
+                []
     in
     svg [ viewBox 0 0 600 200 ]
         [ svg [ x (px 50), y (px 50), width (px 500), height (px 100) ]
             [ fingerboard
             , nut
             , svg [ x (px 10) ]
-                (frets ++ strings)
+                (frets ++ inlays ++ strings)
             ]
         ]
