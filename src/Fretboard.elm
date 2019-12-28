@@ -169,6 +169,7 @@ view model =
                 , fontSize (px (labelRadiusPx * 1.1))
                 , textAnchor AnchorMiddle
                 , dominantBaseline DominantBaselineCentral
+                , fontFamily [ "sans-serif" ]
                 ]
                 [ text l.text ]
             ]
