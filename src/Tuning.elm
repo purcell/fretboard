@@ -1,4 +1,4 @@
-module Tuning exposing (Tuning, standardSeven, standardSix)
+module Tuning exposing (Tuning, standardSeven, standardSix, ukulele)
 
 import Scale exposing (Modifier(..), NoteName(..), Tone, toTone)
 
@@ -23,3 +23,13 @@ standardSix =
 standardSeven : Tuning
 standardSeven =
     toTone { name = B, modifier = Natural, octave = 2 } :: standardSix
+
+
+ukulele : Tuning
+ukulele =
+    List.map toTone
+        [ { name = G, modifier = Natural, octave = 4 }
+        , { name = C, modifier = Natural, octave = 4 }
+        , { name = E, modifier = Natural, octave = 4 }
+        , { name = A, modifier = Natural, octave = 4 }
+        ]
