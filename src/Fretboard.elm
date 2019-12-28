@@ -1,11 +1,16 @@
-module Fretboard exposing (Fretboard, default, view)
+module Fretboard exposing
+    ( Fretboard
+    , Label
+    , Position
+    , view
+    )
 
 import Color exposing (Color)
 import Html exposing (Html)
-import TypedSvg exposing (circle, line, rect, svg)
-import TypedSvg.Attributes exposing (cx, cy, fill, height, r, stroke, strokeWidth, viewBox, width, x, x1, x2, y, y1, y2)
-import TypedSvg.Core exposing (Svg)
-import TypedSvg.Types exposing (Fill(..), Length(..), px)
+import TypedSvg exposing (circle, line, rect, svg, text_)
+import TypedSvg.Attributes exposing (cx, cy, dominantBaseline, fill, fontFamily, fontSize, height, r, stroke, strokeWidth, textAnchor, viewBox, width, x, x1, x2, y, y1, y2)
+import TypedSvg.Core exposing (Svg, text)
+import TypedSvg.Types exposing (AnchorAlignment(..), DominantBaseline(..), Fill(..), Length(..), px)
 
 
 type alias Fretboard =
@@ -25,17 +30,7 @@ type alias Label =
     -- Later: convert to sum type of "note name", "interval number" etc.
     { position : Position
     , color : Color
-    }
-
-
-default : Fretboard
-default =
-    { numStrings = 6
-    , numFrets = 15
-    , labels =
-        [ { position = { string = 1, fret = 0 }, color = Color.rgba 255 0 0 80 }
-        , { position = { string = 2, fret = 3 }, color = Color.rgba 0 255 0 80 }
-        ]
+    , text : String
     }
 
 
@@ -46,7 +41,7 @@ view model =
             40
 
         nutWidthPx =
-            fretColumnWidthPx / 4
+            fretColumnWidthPx / 3
 
         stringSlicePx =
             20
@@ -148,19 +143,35 @@ view model =
                 []
 
         labels =
-            List.map label model.labels
+            List.concatMap label model.labels
 
         labelRadiusPx =
-            (stringSlicePx / 2) * 0.8
+            (stringSlicePx / 2) * 0.9
 
         label l =
-            circle
-                [ cx (px (fretFingerOffsetPx l.position.fret))
-                , cy (px (stringYPx l.position.string))
+            let
+                centerX =
+                    px (fretFingerOffsetPx l.position.fret)
+
+                centerY =
+                    px (stringYPx l.position.string)
+            in
+            [ circle
+                [ cx centerX
+                , cy centerY
                 , r (px labelRadiusPx)
                 , fill (Fill l.color)
                 ]
                 []
+            , text_
+                [ x centerX
+                , y centerY
+                , fontSize (px (labelRadiusPx * 1.1))
+                , textAnchor AnchorMiddle
+                , dominantBaseline DominantBaselineCentral
+                ]
+                [ text l.text ]
+            ]
 
         fretboardLengthPx =
             toFloat ((model.numFrets + 1) * fretColumnWidthPx) + fretWidthPx
