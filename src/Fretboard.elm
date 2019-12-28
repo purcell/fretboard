@@ -172,8 +172,9 @@ view model =
         [ svg [ x (px marginPx), y (px marginPx), height (px fretboardHeightPx), width (px fretboardLengthPx), viewBox 0 0 fretboardLengthPx fretboardHeightPx ]
             ([ nut
              , svg [ x (px fretColumnWidthPx) ]
-                (fingerboard :: (frets ++ inlays ++ strings))
+                (fingerboard :: (frets ++ strings))
              ]
+                ++ inlays
                 ++ labels
             )
         ]
