@@ -5,6 +5,7 @@ import Color
 import Fretboard exposing (Fretboard)
 import Html exposing (Html, div)
 import Note
+import Scale
 import Tuning exposing (Tuning)
 
 
@@ -38,11 +39,17 @@ init _ =
         numStrings =
             List.length tuning
 
+        scale =
+            Scale.major
+
         tonic =
-            Note.toTone <| Note.Note Note.C Note.Natural 4
+            Note.toTone <| Note.Note Note.G Note.Natural 4
+
+        isInScale tone =
+            Scale.isSemitoneDegreeInScale scale (Note.semitoneDegree tonic tone)
 
         labels =
-            labelAllNotes tonic <| allTones tuning numFrets
+            labelAllNotes tonic <| List.filter (\( _, tone ) -> isInScale tone) <| allTones tuning numFrets
     in
     ( { fretboard =
             { numStrings = numStrings
