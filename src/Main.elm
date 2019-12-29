@@ -38,8 +38,11 @@ init _ =
         numStrings =
             List.length tuning
 
+        tonic =
+            Note.toTone <| Note.Note Note.C Note.Natural 4
+
         labels =
-            labelAllNotes tuning numFrets
+            labelAllNotes tonic <| allTones tuning numFrets
     in
     ( { fretboard =
             { numStrings = numStrings
@@ -51,14 +54,25 @@ init _ =
     )
 
 
-labelAllNotes : Tuning -> Int -> List Fretboard.Label
-labelAllNotes roots numFrets =
-    let
-        fretNote root s f =
-            { position = { string = s, fret = f }
-            , color = Color.rgb255 255 0 0
-            , text = Note.noteToString <| Note.toNote <| Note.addSemitones root f
+labelAllNotes : Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
+labelAllNotes tonic tones =
+    List.map
+        (\( position, tone ) ->
+            { position = position
+            , color = Color.hsl (toFloat (Note.semitoneDegree tonic tone) / 12) 1 0.8
+            , text = Note.noteToString (Note.toNote tone)
             }
+        )
+        tones
+
+
+allTones : Tuning -> Int -> List ( Fretboard.Position, Note.Tone )
+allTones roots numFrets =
+    let
+        fretNote open s f =
+            ( { string = s, fret = f }
+            , Note.addSemitones open f
+            )
 
         stringNotes n root =
             List.map (fretNote root (n + 1)) (List.range 0 numFrets)

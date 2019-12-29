@@ -5,6 +5,7 @@ module Note exposing
     , Tone
     , addSemitones
     , noteToString
+    , semitoneDegree
     , toNote
     , toTone
     )
@@ -14,6 +15,16 @@ type
     Tone
     -- Opaque internal representation of a tone
     = Tone Int
+
+
+intervalSize : Tone -> Tone -> Int
+intervalSize (Tone from) (Tone to) =
+    to - from
+
+
+semitoneDegree : Tone -> Tone -> Int
+semitoneDegree tonic other =
+    modBy 12 (intervalSize tonic other)
 
 
 addSemitones : Tone -> Int -> Tone
