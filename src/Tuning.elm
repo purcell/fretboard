@@ -1,6 +1,6 @@
 module Tuning exposing (Tuning, standardSeven, standardSix, ukulele)
 
-import Scale exposing (Modifier(..), NoteName(..), Tone, toTone)
+import Scale exposing (Modifier(..), Note(..), NoteLetter(..), Tone, toTone)
 
 
 type alias Tuning =
@@ -11,25 +11,25 @@ type alias Tuning =
 standardSix : Tuning
 standardSix =
     List.map toTone
-        [ { name = E, modifier = Natural, octave = 3 }
-        , { name = A, modifier = Natural, octave = 3 }
-        , { name = D, modifier = Natural, octave = 4 }
-        , { name = G, modifier = Natural, octave = 4 }
-        , { name = B, modifier = Natural, octave = 4 }
-        , { name = E, modifier = Natural, octave = 5 }
+        [ Note E Natural 3
+        , Note A Natural 3
+        , Note D Natural 4
+        , Note G Natural 4
+        , Note B Natural 4
+        , Note E Natural 5
         ]
 
 
 standardSeven : Tuning
 standardSeven =
-    toTone { name = B, modifier = Natural, octave = 2 } :: standardSix
+    toTone (Note B Natural 2) :: standardSix
 
 
 ukulele : Tuning
 ukulele =
     List.map toTone
-        [ { name = G, modifier = Natural, octave = 4 }
-        , { name = C, modifier = Natural, octave = 4 }
-        , { name = E, modifier = Natural, octave = 4 }
-        , { name = A, modifier = Natural, octave = 4 }
+        [ Note G Natural 4
+        , Note C Natural 4
+        , Note E Natural 4
+        , Note A Natural 4
         ]

@@ -1,7 +1,7 @@
 module Scale exposing
     ( Modifier(..)
-    , NamedNote
-    , NoteName(..)
+    , Note(..)
+    , NoteLetter(..)
     , Tone
     , addSemitones
     , namedNoteToString
@@ -21,7 +21,7 @@ addSemitones (Tone i) s =
     Tone (i + s)
 
 
-type NoteName
+type NoteLetter
     = C
     | D
     | E
@@ -31,7 +31,7 @@ type NoteName
     | B
 
 
-noteNameToString : NoteName -> String
+noteNameToString : NoteLetter -> String
 noteNameToString n =
     case n of
         A ->
@@ -56,7 +56,7 @@ noteNameToString n =
             "G"
 
 
-semitonesAboveC : NoteName -> Int
+semitonesAboveC : NoteLetter -> Int
 semitonesAboveC name =
     case name of
         C ->
@@ -100,20 +100,17 @@ modifierToString mod =
             ""
 
 
-type alias NamedNote =
-    { name : NoteName
-    , modifier : Modifier
-    , octave : Int
-    }
+type Note
+    = Note NoteLetter Modifier Int
 
 
-toTone : NamedNote -> Tone
-toTone nn =
+toTone : Note -> Tone
+toTone (Note name modifier octave) =
     Tone
         (12
-            * nn.octave
-            + semitonesAboveC nn.name
-            + (case nn.modifier of
+            * octave
+            + semitonesAboveC name
+            + (case modifier of
                 Flat ->
                     -1
 
@@ -126,7 +123,7 @@ toTone nn =
         )
 
 
-toNote : Tone -> NamedNote
+toNote : Tone -> Note
 toNote (Tone i) =
     let
         octave =
@@ -174,9 +171,9 @@ toNote (Tone i) =
                 _ ->
                     ( C, Natural )
     in
-    { name = name, modifier = modifier, octave = octave }
+    Note name modifier octave
 
 
-namedNoteToString : NamedNote -> String
-namedNoteToString nn =
-    noteNameToString nn.name ++ modifierToString nn.modifier
+namedNoteToString : Note -> String
+namedNoteToString (Note name modifier _) =
+    noteNameToString name ++ modifierToString modifier
