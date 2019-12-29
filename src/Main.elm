@@ -4,7 +4,7 @@ import Browser
 import Color
 import Fretboard exposing (Fretboard)
 import Html exposing (Html, div)
-import Scale
+import Note
 import Tuning exposing (Tuning)
 
 
@@ -57,7 +57,7 @@ labelAllNotes roots numFrets =
         fretNote root s f =
             { position = { string = s, fret = f }
             , color = Color.rgb255 255 0 0
-            , text = Scale.namedNoteToString <| Scale.toNote <| Scale.addSemitones root f
+            , text = Note.noteToString <| Note.toNote <| Note.addSemitones root f
             }
 
         stringNotes n root =

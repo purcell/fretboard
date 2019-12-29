@@ -1,6 +1,6 @@
 module Tuning exposing (Tuning, standardSeven, standardSix, ukulele)
 
-import Scale exposing (Modifier(..), Note(..), NoteLetter(..), Tone, toTone)
+import Note exposing (Modifier(..), Note(..), NoteLetter(..), Tone, toTone)
 
 
 type alias Tuning =

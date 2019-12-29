@@ -1,10 +1,10 @@
-module Scale exposing
+module Note exposing
     ( Modifier(..)
     , Note(..)
     , NoteLetter(..)
     , Tone
     , addSemitones
-    , namedNoteToString
+    , noteToString
     , toNote
     , toTone
     )
@@ -31,8 +31,8 @@ type NoteLetter
     | B
 
 
-noteNameToString : NoteLetter -> String
-noteNameToString n =
+noteLetterToString : NoteLetter -> String
+noteLetterToString n =
     case n of
         A ->
             "A"
@@ -174,6 +174,6 @@ toNote (Tone i) =
     Note name modifier octave
 
 
-namedNoteToString : Note -> String
-namedNoteToString (Note name modifier _) =
-    noteNameToString name ++ modifierToString modifier
+noteToString : Note -> String
+noteToString (Note name modifier _) =
+    noteLetterToString name ++ modifierToString modifier
