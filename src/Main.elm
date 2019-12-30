@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Fretboard exposing (Fretboard)
+import Fretboard
 import Html exposing (Html, div)
 import IntervalColor exposing (DegreeColorFn)
 import Key exposing (Key)
@@ -15,7 +15,9 @@ type alias Msg =
 
 
 type alias Model =
-    { fretboard : Fretboard
+    { key : Key
+    , tuning : Tuning
+    , numFrets : Int
     }
 
 
@@ -31,30 +33,40 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
+    ( { key = Key.makeKey Note.F Note.Sharp Scale.harmonicMinor
+      , tuning = Tuning.standardSix
+      , numFrets = 8
+      }
+    , Cmd.none
+    )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.none
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update _ model =
+    ( model, Cmd.none )
+
+
+view : Model -> Html Msg
+view model =
     let
-        tuning =
-            Tuning.standardSix
-
-        numFrets =
-            15
-
-        key =
-            Key.makeKey Note.F Note.Sharp Scale.harmonicMinor
+        fretboard =
+            { numStrings = List.length model.tuning
+            , numFrets = model.numFrets
+            , labels = labels
+            }
 
         colorFn =
             IntervalColor.contrasting
 
         labels =
-            labelAllNotes colorFn (Key.isInKey key) (Key.rootTone key) <| allTones tuning numFrets
+            labelAllNotes colorFn (Key.isInKey model.key) (Key.rootTone model.key) <| allTones model.tuning model.numFrets
     in
-    ( { fretboard =
-            { numStrings = List.length tuning
-            , numFrets = numFrets
-            , labels = labels
-            }
-      }
-    , Cmd.none
-    )
+    Html.div [] [ Fretboard.view fretboard ]
 
 
 labelAllNotes : DegreeColorFn -> (Note.Tone -> Bool) -> Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
@@ -82,18 +94,3 @@ allTones roots numFrets =
             List.map (fretNote root (n + 1)) (List.range 0 numFrets)
     in
     List.concat <| List.indexedMap stringNotes roots
-
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update _ model =
-    ( model, Cmd.none )
-
-
-view : Model -> Html Msg
-view model =
-    Html.div [] [ Fretboard.view model.fretboard ]
