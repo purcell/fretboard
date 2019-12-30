@@ -1,10 +1,10 @@
 module Main exposing (main)
 
 import Browser
-import Color exposing (Color)
 import Fretboard exposing (Fretboard)
 import Html exposing (Html, div)
 import IntervalColor exposing (DegreeColorFn)
+import Key exposing (Key)
 import Note
 import Scale
 import Tuning exposing (Tuning)
@@ -38,20 +38,14 @@ init _ =
         numFrets =
             15
 
-        scale =
-            Scale.chromatic
-
-        tonic =
-            Note.toTone <| Note.Note Note.G Note.Natural 4
-
-        isInScale tone =
-            Scale.isSemitoneDegreeInScale scale (Note.semitoneDegree tonic tone)
+        key =
+            Key.makeKey Note.F Note.Sharp Scale.harmonicMinor
 
         colorFn =
             IntervalColor.contrasting
 
         labels =
-            labelAllNotes colorFn isInScale tonic <| allTones tuning numFrets
+            labelAllNotes colorFn (Key.isInKey key) (Key.rootTone key) <| allTones tuning numFrets
     in
     ( { fretboard =
             { numStrings = List.length tuning
