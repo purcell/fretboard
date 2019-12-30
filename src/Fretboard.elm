@@ -10,7 +10,7 @@ import Html exposing (Html)
 import TypedSvg exposing (circle, line, rect, svg, text_)
 import TypedSvg.Attributes exposing (cx, cy, dominantBaseline, fill, fontFamily, fontSize, height, r, stroke, strokeWidth, textAnchor, viewBox, width, x, x1, x2, y, y1, y2)
 import TypedSvg.Core exposing (Svg, text)
-import TypedSvg.Types exposing (AnchorAlignment(..), DominantBaseline(..), Fill(..), Length(..), px)
+import TypedSvg.Types exposing (AnchorAlignment(..), DominantBaseline(..), Fill(..), Filter(..), InValue(..), Length(..), px)
 
 
 type alias Fretboard =
@@ -31,6 +31,7 @@ type alias Label =
     { position : Position
     , color : Color
     , text : String
+    , highlight : Bool
     }
 
 
@@ -86,7 +87,7 @@ view model =
                 , y1 (px (stringYPx i))
                 , y2 (px (stringYPx i))
                 , x2 (Percent 100)
-                , stroke Color.black
+                , stroke Color.charcoal
                 , strokeWidth (px (1 + logBase 10 (toFloat (1 + model.numStrings - i))))
                 ]
                 []
@@ -155,17 +156,65 @@ view model =
 
                 centerY =
                     px (stringYPx l.position.string)
+
+                labelAlpha =
+                    if l.highlight then
+                        1
+
+                    else
+                        0.4
+
+                bgColor =
+                    withAlpha labelAlpha l.color
+
+                labelBlack =
+                    Color.rgb255 15 15 15
+
+                labelTextColor =
+                    let
+                        c =
+                            Color.toHsla bgColor
+                    in
+                    if c.lightness > 0.5 then
+                        labelBlack
+
+                    else
+                        Color.white
             in
-            [ circle
+            [ -- White background for faded labels
+              circle
                 [ cx centerX
                 , cy centerY
                 , r (px labelRadiusPx)
-                , fill (Fill l.color)
+                , fill
+                    (if l.highlight then
+                        FillNone
+
+                     else
+                        Fill (withAlpha 0.8 Color.white)
+                    )
+                ]
+                []
+            , circle
+                [ cx centerX
+                , cy centerY
+                , r (px labelRadiusPx)
+                , fill
+                    (Fill bgColor)
+                , stroke labelBlack
+                , strokeWidth
+                    (if l.highlight then
+                        Px 1.5
+
+                     else
+                        Px 0
+                    )
                 ]
                 []
             , text_
                 [ x centerX
                 , y centerY
+                , fill (Fill (withAlpha labelAlpha labelTextColor))
                 , fontSize (px (labelRadiusPx * 1.1))
                 , textAnchor AnchorMiddle
                 , dominantBaseline DominantBaselineCentral
@@ -173,6 +222,9 @@ view model =
                 ]
                 [ text l.text ]
             ]
+
+        withAlpha a c =
+            Color.fromHsla <| (\c2 -> { c2 | alpha = a }) <| Color.toHsla c
 
         fretboardLengthPx =
             toFloat ((model.numFrets + 1) * fretColumnWidthPx) + fretWidthPx

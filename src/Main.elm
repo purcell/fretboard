@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Browser
+import Color exposing (Color)
 import Fretboard exposing (Fretboard)
 import Html exposing (Html, div)
 import IntervalColor exposing (DegreeColorFn)
@@ -50,7 +51,7 @@ init _ =
             IntervalColor.contrasting
 
         labels =
-            labelAllNotes colorFn tonic <| List.filter (\( _, tone ) -> isInScale tone) <| allTones tuning numFrets
+            labelAllNotes colorFn isInScale tonic <| allTones tuning numFrets
     in
     ( { fretboard =
             { numStrings = List.length tuning
@@ -62,13 +63,14 @@ init _ =
     )
 
 
-labelAllNotes : DegreeColorFn -> Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
-labelAllNotes colorFn tonic tones =
+labelAllNotes : DegreeColorFn -> (Note.Tone -> Bool) -> Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
+labelAllNotes colorFn highlight tonic tones =
     List.map
         (\( position, tone ) ->
             { position = position
             , color = colorFn (Note.semitoneDegree tonic tone)
             , text = Note.noteToString (Note.toNote tone)
+            , highlight = highlight tone
             }
         )
         tones
