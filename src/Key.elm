@@ -1,4 +1,4 @@
-module Key exposing (Key, isInKey, makeKey, rootTone)
+module Key exposing (Key, isInKey, keyName, makeKey, rootTone)
 
 import Note exposing (Modifier, Note(..), NoteLetter, Tone)
 import Scale exposing (Scale)
@@ -11,6 +11,11 @@ type Key
 makeKey : NoteLetter -> Modifier -> Scale -> Key
 makeKey =
     Key
+
+
+keyName : Key -> String
+keyName (Key n m s) =
+    Note.noteLetterToString n ++ Note.modifierToString m ++ " " ++ Scale.scaleName s
 
 
 rootTone : Key -> Tone

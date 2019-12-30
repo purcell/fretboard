@@ -4,6 +4,8 @@ module Note exposing
     , NoteLetter(..)
     , Tone
     , addSemitones
+    , modifierToString
+    , noteLetterToString
     , noteToString
     , semitoneDegree
     , toNote

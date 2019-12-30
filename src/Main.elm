@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Fretboard
-import Html exposing (Html, div)
+import Html exposing (Html)
 import IntervalColor exposing (DegreeColorFn)
 import Key exposing (Key)
 import Note
@@ -65,8 +65,18 @@ view model =
 
         labels =
             labelAllNotes colorFn (Key.isInKey model.key) (Key.rootTone model.key) <| allTones model.tuning model.numFrets
+
+        title =
+            Key.keyName model.key
     in
-    Html.div [] [ Fretboard.view fretboard ]
+    Html.div []
+        [ Html.figure []
+            [ Html.figcaption []
+                [ Html.text title ]
+            , Fretboard.view
+                fretboard
+            ]
+        ]
 
 
 labelAllNotes : DegreeColorFn -> (Note.Tone -> Bool) -> Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
