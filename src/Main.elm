@@ -1,9 +1,9 @@
 module Main exposing (main)
 
 import Browser
-import Color
 import Fretboard exposing (Fretboard)
 import Html exposing (Html, div)
+import IntervalColor exposing (DegreeColorFn)
 import Note
 import Scale
 import Tuning exposing (Tuning)
@@ -14,7 +14,8 @@ type alias Msg =
 
 
 type alias Model =
-    { fretboard : Fretboard }
+    { fretboard : Fretboard
+    }
 
 
 main : Program () Model Msg
@@ -36,11 +37,8 @@ init _ =
         numFrets =
             15
 
-        numStrings =
-            List.length tuning
-
         scale =
-            Scale.major
+            Scale.chromatic
 
         tonic =
             Note.toTone <| Note.Note Note.G Note.Natural 4
@@ -48,11 +46,14 @@ init _ =
         isInScale tone =
             Scale.isSemitoneDegreeInScale scale (Note.semitoneDegree tonic tone)
 
+        colorFn =
+            IntervalColor.contrasting
+
         labels =
-            labelAllNotes tonic <| List.filter (\( _, tone ) -> isInScale tone) <| allTones tuning numFrets
+            labelAllNotes colorFn tonic <| List.filter (\( _, tone ) -> isInScale tone) <| allTones tuning numFrets
     in
     ( { fretboard =
-            { numStrings = numStrings
+            { numStrings = List.length tuning
             , numFrets = numFrets
             , labels = labels
             }
@@ -61,12 +62,12 @@ init _ =
     )
 
 
-labelAllNotes : Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
-labelAllNotes tonic tones =
+labelAllNotes : DegreeColorFn -> Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
+labelAllNotes colorFn tonic tones =
     List.map
         (\( position, tone ) ->
             { position = position
-            , color = Color.hsl (toFloat (Note.semitoneDegree tonic tone) / 12) 1 0.8
+            , color = colorFn (Note.semitoneDegree tonic tone)
             , text = Note.noteToString (Note.toNote tone)
             }
         )
