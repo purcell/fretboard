@@ -1,4 +1,14 @@
-module Scale exposing (Scale, chromatic, isSemitoneDegreeInScale, major, majorTriad, minor, minorPentatonic, minorTriad)
+module Scale exposing
+    ( Scale
+    , chromatic
+    , harmonicMinor
+    , isSemitoneDegreeInScale
+    , major
+    , majorTriad
+    , minor
+    , minorPentatonic
+    , minorTriad
+    )
 
 
 type Scale
@@ -34,6 +44,11 @@ majorTriad =
 minorTriad : Scale
 minorTriad =
     Scale [ 0, 3, 7 ]
+
+
+harmonicMinor : Scale
+harmonicMinor =
+    Scale [ 0, 2, 3, 5, 7, 8, 11 ]
 
 
 minorPentatonic : Scale
