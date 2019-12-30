@@ -64,7 +64,7 @@ view model =
             IntervalColor.contrasting
 
         labels =
-            labelAllNotes colorFn (Key.isInKey model.key) (Key.rootTone model.key) <| allTones model.tuning model.numFrets
+            labelNotes colorFn (Key.isInKey model.key) (Key.rootTone model.key) <| allTones model.tuning model.numFrets
 
         title =
             Key.keyName model.key
@@ -79,8 +79,8 @@ view model =
         ]
 
 
-labelAllNotes : DegreeColorFn -> (Note.Tone -> Bool) -> Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
-labelAllNotes colorFn highlight tonic tones =
+labelNotes : DegreeColorFn -> (Note.Tone -> Bool) -> Note.Tone -> List ( Fretboard.Position, Note.Tone ) -> List Fretboard.Label
+labelNotes colorFn highlight tonic tones =
     List.map
         (\( position, tone ) ->
             { position = position
