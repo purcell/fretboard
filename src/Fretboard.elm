@@ -165,8 +165,13 @@ view model =
                         0.4
 
                 bgColor =
-                    withAlpha labelAlpha l.color
+                    if l.highlight then
+                        l.color
 
+                    else
+                        Color.rgb255 220 220 220
+
+                -- withAlpha labelAlpha l.color
                 labelBlack =
                     Color.rgb255 15 15 15
 
@@ -232,8 +237,17 @@ view model =
         marginPx =
             20
     in
-    svg [ width (Percent 100), viewBox 0 0 (fretboardLengthPx + 2 * marginPx) (fretboardHeightPx + 2 * marginPx) ]
-        [ svg [ x (px marginPx), y (px marginPx), height (px fretboardHeightPx), width (px fretboardLengthPx), viewBox 0 0 fretboardLengthPx fretboardHeightPx ]
+    svg
+        [ width (Percent 100)
+        , viewBox 0 0 (fretboardLengthPx + 2 * marginPx) (fretboardHeightPx + 2 * marginPx)
+        ]
+        [ svg
+            [ x (px marginPx)
+            , y (px marginPx)
+            , height (px fretboardHeightPx)
+            , width (px fretboardLengthPx)
+            , viewBox 0 0 fretboardLengthPx fretboardHeightPx
+            ]
             ([ nut
              , svg [ x (px fretColumnWidthPx) ]
                 (fingerboard :: (frets ++ strings))

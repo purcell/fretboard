@@ -33,9 +33,9 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { key = Key.makeKey Note.F Note.Sharp Scale.harmonicMinor
+    ( { key = Key.makeKey Note.A Note.Natural Scale.major6Diminished
       , tuning = Tuning.standardSix
-      , numFrets = 8
+      , numFrets = 10
       }
     , Cmd.none
     )
@@ -61,7 +61,7 @@ view model =
             }
 
         colorFn =
-            IntervalColor.contrasting
+            IntervalColor.colorfulDistinct
 
         labels =
             labelNotes colorFn (Key.isInKey model.key) (Key.rootTone model.key) <| allTones model.tuning model.numFrets
